@@ -5,7 +5,7 @@ using UnityEngine;
 public class StageRotation : MonoBehaviour
 {
     public float rotationSpeed = 90f; // 스테이지 회전 속도
-    public Transform playerTransform; // 플레이어 캐릭터의 Transform 컴포넌트
+    public Transform StageTransform; // 스테이지의 Transform 컴포넌트
 
     private bool isRotating = false;
     private bool isCollidingRight = false;
@@ -46,9 +46,9 @@ public class StageRotation : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, step);
 
             // 플레이어 캐릭터의 회전 업데이트
-            if (playerTransform != null)
+            if (StageTransform != null)
             {
-                playerTransform.rotation = Quaternion.RotateTowards(playerTransform.rotation, targetRotation, step);
+                StageTransform.rotation = Quaternion.RotateTowards(StageTransform.rotation, targetRotation, step);
             }
         }
     }
