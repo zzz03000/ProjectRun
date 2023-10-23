@@ -8,6 +8,23 @@ public class StageRotation2 : MonoBehaviour
     public GameObject player; // 플레이어 오브젝트
 
     private string currentOrientation = "Floor";
+    private bool isRotating = false;
+    private Quaternion targetRotation;
+    private float rotationSpeed = 100.0f; // 조정 가능한 회전 속도
+    private void Update()
+    {
+        if (isRotating)
+        {
+            // 여기에 회전 속도를 조정할 수 있는 로직을 추가할 수 있습니다.
+            float step = rotationSpeed * Time.deltaTime;
+            stage.transform.rotation = Quaternion.RotateTowards(stage.transform.rotation, targetRotation, step);
+
+            if (stage.transform.rotation == targetRotation)
+            {
+                isRotating = false;
+            }
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -15,11 +32,11 @@ public class StageRotation2 : MonoBehaviour
         {
             if (currentOrientation == "RightWall")
             {
-                RotateStage(90, 0, 0);
+                RotateStage(90);
             }
             else if (currentOrientation == "LeftWall")
             {
-                RotateStage(-90, 0, 0);
+                RotateStage(-90);
             }
             AdjustPlayerPosition(currentOrientation, "Floor");
             currentOrientation = "Floor";
@@ -28,11 +45,12 @@ public class StageRotation2 : MonoBehaviour
         {
             if (currentOrientation == "Floor")
             {
-                RotateStage(0, 0, -90);
+                Debug.Log("d");
+                RotateStage(90);
             }
             else if (currentOrientation == "Ceiling")
             {
-                RotateStage(0, 0, 90);
+                RotateStage(-90);
             }
             AdjustPlayerPosition(currentOrientation, "RightWall");
             currentOrientation = "RightWall";
@@ -41,11 +59,11 @@ public class StageRotation2 : MonoBehaviour
         {
             if (currentOrientation == "Floor")
             {
-                RotateStage(0, 0, 90);
+                RotateStage(-90);
             }
             else if (currentOrientation == "Ceiling")
             {
-                RotateStage(0, 0, -90);
+                RotateStage(90);
             }
             AdjustPlayerPosition(currentOrientation, "LeftWall");
             currentOrientation = "LeftWall";
@@ -54,20 +72,21 @@ public class StageRotation2 : MonoBehaviour
         {
             if (currentOrientation == "RightWall")
             {
-                RotateStage(0, 0, -90);
+                RotateStage(-90);
             }
             else if (currentOrientation == "LeftWall")
             {
-                RotateStage(0, 0, 90);
+                RotateStage(90);
             }
             AdjustPlayerPosition(currentOrientation, "Ceiling");
             currentOrientation = "Ceiling";
         }
     }
 
-    private void RotateStage(float xAngle, float yAngle, float zAngle)
+    private void RotateStage(float xAngle)
     {
-        stage.transform.Rotate(new Vector3(xAngle, yAngle, zAngle));
+        targetRotation = stage.transform.rotation * Quaternion.Euler(xAngle, 0, 0);
+        isRotating = true;
     }
 
     private void AdjustPlayerPosition(string oldOrientation, string newOrientation)
@@ -78,28 +97,25 @@ public class StageRotation2 : MonoBehaviour
         // 스테이지의 로컬 변위 계산
         if (oldOrientation == "Floor" && newOrientation == "RightWall")
         {
-            stageLocalDisplacement = Quaternion.Euler(0, 0, -90) * player.transform.localPosition;
+            stageLocalDisplacement = Quaternion.Euler(-90, 0, 0) * player.transform.localPosition;
         }
         else if (oldOrientation == "Floor" && newOrientation == "LeftWall")
         {
-            stageLocalDisplacement = Quaternion.Euler(0, 0, 90) * player.transform.localPosition;
+            stageLocalDisplacement = Quaternion.Euler(90, 0, 0) * player.transform.localPosition;
         }
         else if (oldOrientation == "RightWall" && newOrientation == "Floor")
         {
-            stageLocalDisplacement = Quaternion.Euler(0, 0, 90) * player.transform.localPosition;
+            stageLocalDisplacement = Quaternion.Euler(90, 0, 0) * player.transform.localPosition;
         }
         else if (oldOrientation == "LeftWall" && newOrientation == "Floor")
         {
-            stageLocalDisplacement = Quaternion.Euler(0, 0, -90) * player.transform.localPosition;
-        }
-        else if (oldOrientation == "Ceiling" && newOrientation == "Floor")
-        {
-            stageLocalDisplacement = Quaternion.Euler(0, 180, 0) * player.transform.localPosition;
+            stageLocalDisplacement = Quaternion.Euler(-90, 0, 0) * player.transform.localPosition;
         }
 
         // 전역 변위 계산
         playerGlobalDisplacement = stage.transform.TransformVector(stageLocalDisplacement);
-        player.transform.position += playerGlobalDisplacement;
+        //player.transform.position += playerGlobalDisplacement;
+        player.transform.parent = null;
     }
 }
 
