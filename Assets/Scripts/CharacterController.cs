@@ -12,7 +12,7 @@ public class CharacterController : MonoBehaviour
     [SerializeField]
     [Header("Current Speed")]
     private float forwardSpeed = 1f;
-    private float maxSpeed = 10f;
+    private float maxSpeed = 15f;
     private float jumpForce = 8f;
     private float horizontal;
 
@@ -40,6 +40,9 @@ public class CharacterController : MonoBehaviour
         MoveToFront();
 
         Jump();
+
+        if(transform.position.y < -30f)
+            Stop();
     }
 
     private void MoveToFront()
@@ -47,7 +50,7 @@ public class CharacterController : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
 
         if (forwardSpeed <= maxSpeed)
-            forwardSpeed += Time.deltaTime;
+            forwardSpeed += (Time.deltaTime / 5);
         else
             forwardSpeed = maxSpeed;
 
@@ -100,5 +103,14 @@ public class CharacterController : MonoBehaviour
         isJumping = true;
         yield return new WaitForSeconds(0.4f);
         isJumping = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {
+            //게임오버 트리거
+            Stop();
+        }
     }
 }
