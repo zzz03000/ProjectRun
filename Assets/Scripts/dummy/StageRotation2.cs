@@ -11,6 +11,8 @@ public class StageRotation2 : MonoBehaviour
     private bool isRotating = false;
     private Quaternion targetRotation;
     private float rotationSpeed = 100.0f; // 조정 가능한 회전 속도
+
+
     private void Update()
     {
         if (isRotating)
@@ -18,10 +20,12 @@ public class StageRotation2 : MonoBehaviour
             // 여기에 회전 속도를 조정할 수 있는 로직을 추가할 수 있습니다.
             float step = rotationSpeed * Time.deltaTime;
             stage.transform.rotation = Quaternion.RotateTowards(stage.transform.rotation, targetRotation, step);
+            player.GetComponent<Rigidbody>().useGravity = false;
 
             if (stage.transform.rotation == targetRotation)
             {
                 isRotating = false;
+                player.GetComponent<Rigidbody>().useGravity = true;
             }
         }
     }
@@ -31,53 +35,40 @@ public class StageRotation2 : MonoBehaviour
         if (collision.gameObject.name == "Floor")
         {
             if (currentOrientation == "RightWall")
-            {
                 RotateStage(90);
-            }
             else if (currentOrientation == "LeftWall")
-            {
                 RotateStage(-90);
-            }
+
             AdjustPlayerPosition(currentOrientation, "Floor");
             currentOrientation = "Floor";
         }
         else if (collision.gameObject.name == "RightWall")
         {
             if (currentOrientation == "Floor")
-            {
-                Debug.Log("d");
                 RotateStage(90);
-            }
             else if (currentOrientation == "Ceiling")
-            {
                 RotateStage(-90);
-            }
+
             AdjustPlayerPosition(currentOrientation, "RightWall");
             currentOrientation = "RightWall";
         }
         else if (collision.gameObject.name == "LeftWall")
         {
             if (currentOrientation == "Floor")
-            {
                 RotateStage(-90);
-            }
             else if (currentOrientation == "Ceiling")
-            {
                 RotateStage(90);
-            }
+
             AdjustPlayerPosition(currentOrientation, "LeftWall");
             currentOrientation = "LeftWall";
         }
         else if (collision.gameObject.name == "Ceiling")
         {
             if (currentOrientation == "RightWall")
-            {
                 RotateStage(-90);
-            }
             else if (currentOrientation == "LeftWall")
-            {
                 RotateStage(90);
-            }
+
             AdjustPlayerPosition(currentOrientation, "Ceiling");
             currentOrientation = "Ceiling";
         }
@@ -85,8 +76,12 @@ public class StageRotation2 : MonoBehaviour
 
     private void RotateStage(float xAngle)
     {
+        player.GetComponent<Rigidbody>().useGravity = false;
+
         targetRotation = stage.transform.rotation * Quaternion.Euler(xAngle, 0, 0);
         isRotating = true;
+
+        player.GetComponent<Rigidbody>().useGravity = true;
     }
 
     private void AdjustPlayerPosition(string oldOrientation, string newOrientation)
@@ -115,7 +110,7 @@ public class StageRotation2 : MonoBehaviour
         // 전역 변위 계산
         playerGlobalDisplacement = stage.transform.TransformVector(stageLocalDisplacement);
         //player.transform.position += playerGlobalDisplacement;
-        player.transform.parent = null;
+        //player.transform.parent = null;
     }
 }
 
