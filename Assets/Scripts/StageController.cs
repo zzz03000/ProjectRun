@@ -27,14 +27,14 @@ public class StageController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P) && !isRotating & canRotate)
         {
             // P를 누를 때마다 90도씩 회전
-            targetRotationZ += 90.0f;
+            targetRotationZ -= 90.0f;
             isRotating = true;
             RotateStage();
         }
         else if (Input.GetKeyDown(KeyCode.O) && !isRotating & canRotate)
         {
             // O를 누를 때마다 -90도씩 회
-            targetRotationZ -= 90.0f;
+            targetRotationZ += 90.0f;
             isRotating = true;
             RotateStage();
         }

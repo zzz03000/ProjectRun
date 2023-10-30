@@ -18,11 +18,13 @@ public class CharacterController : MonoBehaviour
 
     private bool isJumping;
 
-    private float coyoteTime = 0.2f;
+    private float coyoteTime = 0.4f;
     private float coyoteTimeCounter;
 
-    private float jumpBufferTime = 0.2f;
+    private float jumpBufferTime = 0.4f;
     private float jumpBufferCounter;
+
+    private float jumpCoolTime = 0.4f;
 
     [SerializeField]
     private LayerMask groundLayer;
@@ -55,6 +57,7 @@ public class CharacterController : MonoBehaviour
             forwardSpeed = maxSpeed;
 
         Vector3 velocity = new Vector3(horizontal, 0, forwardSpeed);
+
         velocity *= speed;
         velocity.y = rigid.velocity.y;
         rigid.velocity = velocity;
@@ -101,7 +104,7 @@ public class CharacterController : MonoBehaviour
     private IEnumerator JumpCooldown()
     {
         isJumping = true;
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(jumpCoolTime);
         isJumping = false;
     }
 
