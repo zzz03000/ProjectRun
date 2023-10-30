@@ -1,53 +1,61 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject quitButton;       //메뉴로 나가기 버튼
-    public GameObject resumeButton;      // 재개 버튼
-    public GameObject gameOverSpr;          // GAME OVER 이미지
-    public GameObject gameClearSpr;         // GAME CLEAR 이미지
-    public string sceneName;
+    [SerializeField]
+    private CharacterController player;
 
-    bool setactive = false;
+    [SerializeField] 
+    private GameObject optionPanel;
+    [SerializeField]
+    ScoreManager scoreManager;
+    [SerializeField]
+    private GameObject scorePanel;
+    [SerializeField]
+    private GameObject scoreText;
+    [SerializeField]
+    private GameObject currentScore;
 
-    // Start is called before the first frame update
+    private bool setactive = false;
+
     private void Awake()
     {
-        resumeButton.SetActive(false);
-        quitButton.SetActive(false);  //버튼 숨기기
+        Time.timeScale = 1.0f;
+
+        currentScore.SetActive(true);
+        optionPanel.SetActive(false);
+        scorePanel.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
+        currentScore.GetComponent<TextMeshProUGUI>().text = Mathf.Round(scoreManager.GetScore()).ToString();
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            setactive = true;
-
-            if (setactive == true)
-            {
-                Time.timeScale = 0.0f;
-                resumeButton.SetActive(true);
-                quitButton.SetActive(true);  //버튼 숨기기
-            }
+            setactive = !setactive;
+            Time.timeScale = setactive ? 0 : 1;
+            optionPanel.SetActive(setactive);
         }
+
+        if (player.IsDead)
+            GameOver();
     }
 
     public void Resume()
     {
         Time.timeScale = 1.0f;
-        resumeButton.SetActive(false);
-        quitButton.SetActive(false);  //버튼 숨기기
+        optionPanel.SetActive(false);
     }
 
-    public void Load()
+    public void GameOver() 
     {
-        SceneManager.LoadScene("Start");
+        currentScore.SetActive(false);
+        Time.timeScale = 0f;
+        scorePanel.SetActive(true);
+        scoreText.GetComponent<TextMeshProUGUI>().text = Mathf.Round(scoreManager.GetScore()).ToString();
     }
-
 }
