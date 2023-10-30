@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.TextCore.Text;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,22 +17,30 @@ public class CharacterController : MonoBehaviour
     private float jumpForce = 8f;
     private float horizontal;
 
+    [SerializeField]
     private bool isJumping;
 
-    private float coyoteTime = 0.2f;
+    private float coyoteTime = 0.4f;
     private float coyoteTimeCounter;
 
-    private float jumpBufferTime = 0.2f;
+    private float jumpBufferTime = 0.4f;
+    [SerializeField]
     private float jumpBufferCounter;
+
+    private float jumpCoolTime = 0.4f;
 
     [SerializeField]
     private LayerMask groundLayer;
     [SerializeField]
     private Transform groundChecker;
-    private float groundCheckDistance = 0.1f;
+    private float groundCheckDistance = 0.2f;
+
+    private bool isDead = false;
+    public bool IsDead => isDead;
 
     private void Awake()
     {
+        isDead = false;
         rigid = GetComponent<Rigidbody>();
     }
 
@@ -42,7 +51,7 @@ public class CharacterController : MonoBehaviour
         Jump();
 
         if(transform.position.y < -30f)
-            Stop();
+            Dead();
     }
 
     private void MoveToFront()
@@ -57,6 +66,7 @@ public class CharacterController : MonoBehaviour
         Vector3 velocity = new Vector3(horizontal, 0, forwardSpeed);
         velocity *= speed;
         velocity.y = rigid.velocity.y;
+
         rigid.velocity = velocity;
     }
 
@@ -81,27 +91,24 @@ public class CharacterController : MonoBehaviour
             StartCoroutine(JumpCooldown());
         }
 
-        if (Input.GetButtonUp("Jump") && rigid.velocity.y > 0f)
+        if (Input.GetButtonUp("Jump") && rigid.velocity.y > 0)
         {
             coyoteTimeCounter = 0f;
         }
     }
 
-    private void Stop()
-    {
-        rigid.velocity = Vector3.zero;
-    }
-
     private bool IsGround()
     {
         RaycastHit hit;
+        Debug.DrawRay(groundChecker.position, Vector3.down * groundCheckDistance, Color.red);
+        Debug.Log(Physics.Raycast(groundChecker.position, Vector3.down, out hit, groundCheckDistance));
         return Physics.Raycast(groundChecker.position, Vector3.down, out hit, groundCheckDistance);
     }
 
     private IEnumerator JumpCooldown()
     {
         isJumping = true;
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(jumpCoolTime);
         isJumping = false;
     }
 
@@ -109,8 +116,12 @@ public class CharacterController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            //게임오버 트리거
-            Stop();
+            Dead();
         }
+    }
+
+    private void Dead() 
+    {
+        isDead = true;
     }
 }
