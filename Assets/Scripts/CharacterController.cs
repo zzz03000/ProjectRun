@@ -24,7 +24,6 @@ public class CharacterController : MonoBehaviour
     private float coyoteTimeCounter;
 
     private float jumpBufferTime = 0.4f;
-    [SerializeField]
     private float jumpBufferCounter;
 
     private float jumpCoolTime = 0.4f;
@@ -33,10 +32,13 @@ public class CharacterController : MonoBehaviour
     private LayerMask groundLayer;
     [SerializeField]
     private Transform groundChecker;
-    private float groundCheckDistance = 0.2f;
+    private float groundCheckDistance = 1.1f;
 
     private bool isDead = false;
     public bool IsDead => isDead;
+
+    public float Horizontal => horizontal;
+    public float YVelocity => rigid.velocity.y;
 
     private void Awake()
     {
