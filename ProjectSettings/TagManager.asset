@@ -9,6 +9,7 @@ TagManager:
   - Ceiling
   - Floor
   - Obstacle
+  - Goal
   layers:
   - Default
   - TransparentFX
