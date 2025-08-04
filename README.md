@@ -24,3 +24,6 @@ Run은(는) Unity로 개발된 러닝 액션 게임입니다.
 | 🧪 테스트 및 디버깅 | 게임 기능 테스트, 버그 수정 |
 
 ---
+
+<img width="914" height="509" alt="image" src="https://github.com/user-attachments/assets/7a032ccb-0679-47a8-87ca-c1c81ce7e389" />
+<img width="914" height="514" alt="image" src="https://github.com/user-attachments/assets/48efb9fd-f02b-45f3-aa54-9a20a8fe6c6d" />
